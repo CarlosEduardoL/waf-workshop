@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  dummy-app:
+    image: nginx
+    networks:
+      - waf-network
+    ports:
+      - "8080:80"
+
+  nginx-modsec:
+    image: owasp/modsecurity-crs:3.3.5-nginx-202401080101
+    networks:
+      - waf-network
+    ports:
+      - "8081:80"
+    depends_on:
+      - dummy-app
+    volumes:
+      - ./modsec_proxy.conf:/etc/nginx/conf.d/default.conf
+
+networks:
+  waf-network:
